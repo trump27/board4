@@ -1,3 +1,16 @@
+<style lang="stylus">
+// .view
+.route-transition
+  transition all .5s ease
+.route-enter,
+.route-leave
+  opacity 0
+  padding 0 0
+  height 0
+  // transform translate3d(10px, 0, 0)
+  transform translateX(15px)
+</style>
+
 <template>
   <div>
     <nav class="navbar navbar-default">
@@ -25,7 +38,7 @@
       </div>
     </nav>
     <div class="container">
-      <router-view></router-view>
+      <router-view transition="route"></router-view>
     </div>
   </div>
 </template>
