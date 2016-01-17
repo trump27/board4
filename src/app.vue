@@ -2,13 +2,14 @@
 // .view
 .route-transition
   transition all .5s ease
-.route-enter,
 .route-leave
+  display none
+.route-enter
   opacity 0
   padding 0 0
   height 0
-  // transform translate3d(10px, 0, 0)
-  transform translateX(15px)
+  transform translate3d(0, 0, 0)
+  // transform translateX(15px)
 </style>
 
 <template>
