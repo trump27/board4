@@ -6,9 +6,9 @@ export const config = {
   todo_url: API_BASE + 'todos/'
 }
 
-import Login from './login/login.vue'
+import Login from './components/login.vue'
 import Home from './components/home.vue'
-import Todo from './todos/todo.vue'
+import Todo from './components/todo.vue'
 
 export function configRouter (router) {
 

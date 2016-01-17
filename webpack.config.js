@@ -5,6 +5,7 @@ module.exports = {
     publicPath: 'build/',
     filename: 'build.js'
   },
+  devtool: "#source-map",
   module: {
     loaders: [
       { test: /\.vue$/, loader: 'vue' },
