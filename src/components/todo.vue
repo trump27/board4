@@ -2,8 +2,8 @@
 .v-transition
   transition all .3s ease
 .v-enter, .v-leave
-  height 0
-  padding 0 0
+  // height 0
+  // padding 0 0
   opacity 0
 .addTodoForm
   margin-bottom 15px
@@ -12,6 +12,8 @@
   outline none
   width 70%
 .todoItem
+  input
+    background-color transparent
   input[type="checkbox"]
     display inline-block
     position relative
@@ -20,9 +22,10 @@
   div.todoBlock
     display inline-block
     width 80%
-  .completed
-    input[type="text"]
-      text-decoration line-through
+.completed
+  input[type="text"]
+    text-decoration line-through
+  background-color #efefef
 
 </style>
 
@@ -30,7 +33,8 @@
   <div>
     <h1>Todo</h1>
     <div class="addTodoForm form-inline">
-      <input v-model="newTodoTitile"
+      <input v-model="newTodoTitle"
+        id="newTodoTitle"
         @keyup.enter="addTodo"
         class="form-control" size="20" placeholder="todo title...">
       <input v-model="newTodoDesc"
@@ -38,10 +42,16 @@
       <button @click="addTodo" class="btn btn-primary btn-sm">Add</button>
     </div>
     <ul class="list-group">
-      <li class="list-group-item todoItem" v-for="todo in todos | orderBy 'id' -1 " transition>
-        <input type="checkbox" @click="doneTodo(todo)">
-        <div class="todoBlock"
-          :class="todo.completed ? 'completed' : ''">
+      <li class="list-group-item todoItem"
+        v-for="todo in todos | orderBy 'completed' -1 'id' -1 "
+        :class="{'completed' : (todo.completed)}"
+        transition>
+        <input type="checkbox"
+          @click="doneTodo(todo)"
+          v-model="todo.completed"
+          v-bind:value="(todo.completed===null)">
+        <!--  v-bind:false-value="(todo.completed===null)">-->
+        <div class="todoBlock">
           <input type="text"
             v-model="todo.title"
             @focus="editTitle(todo.title)"
@@ -80,7 +90,7 @@ function formatDatetime (date = null) {
 export default {
   data () {
     return {
-      newTodoTitile: '',
+      newTodoTitle: '',
       newTodoDesc: '',
       todos: []
     }
@@ -101,20 +111,28 @@ export default {
           console.log(err)
         })
         // }).bind(this)
+
+      this.$nextTick(() => {
+        document.getElementById('newTodoTitle').focus()
+      })
+
     },
 
     addTodo () {
-      var title = this.newTodoTitile.trim()
+      var title = this.newTodoTitle.trim()
       if (title) {
         var todo = { title: title, description: this.newTodoDesc}
         this.$http.post(config.todo_url, todo)
           .then((response) => {
             todo.id = response.data.data.id
-            this.$data.todos.unshift(todo)
+            this.todos.unshift(todo)
+            this.$nextTick(() => {
+              document.getElementById('newTodoTitle').focus()
+            })
           }, (response) => {
             console.log('add error')
           })
-        this.newTodoTitile = this.newTodoDesc = ''
+        this.newTodoTitle = this.newTodoDesc = ''
       }
     },
     _updateTodo (todo) {
