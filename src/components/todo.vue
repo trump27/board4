@@ -2,18 +2,19 @@
 .v-transition
   transition all .3s ease
 .v-enter, .v-leave
-  // height 0
-  // padding 0 0
   opacity 0
 .addTodoForm
   margin-bottom 15px
 .todoTitle
   border none
   outline none
-  width 70%
 .todoItem
+  width 100%
   input
     background-color transparent
+  input[type="text"]
+    display block
+    width 100%
   input[type="checkbox"]
     display inline-block
     position relative
@@ -49,7 +50,7 @@
         <input type="checkbox"
           @click="doneTodo(todo)"
           v-model="todo.done">
-        <div class="todoBlock">{{todo.id}}
+        <div class="todoBlock">
           <input type="text"
             v-model="todo.title"
             @focus="editTitle(todo.title)"
@@ -136,6 +137,7 @@ export default {
         this.$http.post(config.todo_url, todo)
           .then((response) => {
             todo.id = response.data.data.id
+            todo.user_id = response.data.data.user_id
             this.todos.unshift(todo)
             this.$nextTick(() => {
               document.getElementById('newTodoTitle').focus()
