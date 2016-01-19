@@ -41,10 +41,12 @@
       <input v-model="newTodoDesc"
         @keyup.enter="addTodo" class="form-control" size="30" placeholder="description...">
       <button @click="addTodo" class="btn btn-primary btn-sm">Add</button>
+      <input v-model="searchText" class="form-control" placeholder="quick seacrh"
+        @keyup.esc="searchText = ''">
     </div>
     <ul class="list-group">
       <li class="list-group-item todoItem"
-        v-for="todo in todos | todoFilter "
+        v-for="todo in todos | todoFilter | filterBy searchText in searchFields"
         :class="{'completed' : todo.done}"
         transition>
         <input type="checkbox"
@@ -91,7 +93,9 @@ export default {
     return {
       newTodoTitle: '',
       newTodoDesc: '',
-      todos: []
+      todos: [],
+      searchText: '',
+      searchFields: ['title', 'description']
     }
   },
 
