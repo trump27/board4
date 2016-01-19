@@ -43,15 +43,13 @@
     </div>
     <ul class="list-group">
       <li class="list-group-item todoItem"
-        v-for="todo in todos | orderBy 'completed' -1 'id' -1 "
-        :class="{'completed' : (todo.completed)}"
+        v-for="todo in todos | todoFilter "
+        :class="{'completed' : todo.done}"
         transition>
         <input type="checkbox"
           @click="doneTodo(todo)"
-          v-model="todo.completed"
-          v-bind:value="(todo.completed===null)">
-        <!--  v-bind:false-value="(todo.completed===null)">-->
-        <div class="todoBlock">
+          v-model="todo.done">
+        <div class="todoBlock">{{todo.id}}
           <input type="text"
             v-model="todo.title"
             @focus="editTitle(todo.title)"
@@ -96,6 +94,19 @@ export default {
     }
   },
 
+  filters: {
+    todoFilter: (todos) => {
+      return todos.filter((todo) => {
+        return true
+      })
+      .sort((todoA, todoB) => {
+        if (todoA.done !== todoB.done) return todoA.done - todoB.done
+        if (todoA.priority !== todoB.priority) return todoA.priority - todoB.priority
+        return todoB.id - todoA.id
+      })
+    }
+  },
+
   created: function () {
     console.log('created todo-app')
     this.fetchTodoList()
@@ -121,7 +132,7 @@ export default {
     addTodo () {
       var title = this.newTodoTitle.trim()
       if (title) {
-        var todo = { title: title, description: this.newTodoDesc}
+        var todo = { title: title, description: this.newTodoDesc, done: false}
         this.$http.post(config.todo_url, todo)
           .then((response) => {
             todo.id = response.data.data.id
@@ -158,12 +169,9 @@ export default {
         })
     },
     doneTodo (todo) {
-      if (todo.completed) {
-        todo.completed = null
-      } else {
-        todo.completed = formatDatetime()
-      }
-      this._updateTodo({id: todo.id, completed: todo.completed})
+      todo.done = !todo.done
+      if (todo.done) todo.completed = formatDatetime()
+      this._updateTodo({id: todo.id, completed: todo.completed, done: todo.done})
     },
     editTitle (title) {
       this.titleCache = title
