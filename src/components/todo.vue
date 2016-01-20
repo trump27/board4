@@ -16,9 +16,10 @@
     display block
     width 100%
   input[type="checkbox"]
-    display inline-block
+    // display inline-block
     position relative
-    top -10px
+    top: 50%;
+    transform: translateY(-50%);
     width 35px
   div.todoBlock
     display inline-block
@@ -44,6 +45,19 @@
       <input v-model="searchText" class="form-control" placeholder="quick seacrh"
         @keyup.esc="searchText = ''">
     </div>
+
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" class="btn btn-default btn-sm"
+        @click="state = 'all'"
+        :class="{'active' : state=='all'}">All</button>
+      <button type="button" class="btn btn-default btn-sm"
+        @click="state = 'active'"
+        :class="{'active' : state=='active'}">Active</button>
+      <button type="button" class="btn btn-default btn-sm"
+        @click="state = 'completed'"
+        :class="{'active' : state=='completed'}">Completed</button>
+    </div>
+
     <ul class="list-group">
       <li class="list-group-item todoItem"
         v-for="todo in todos | todoFilter | filterBy searchText in searchFields"
@@ -91,6 +105,7 @@ function formatDatetime (date = null) {
 export default {
   data () {
     return {
+      state: 'active',
       newTodoTitle: '',
       newTodoDesc: '',
       todos: [],
@@ -103,6 +118,9 @@ export default {
     todoFilter: (todos) => {
       return todos.filter((todo) => {
         return true
+        // if (self.state === 'all') return true
+        // if (self.state === 'active' && !todo.done) return true
+        // if (self.state === 'completed' && todo.done) return true
       })
       .sort((todoA, todoB) => {
         if (todoA.done !== todoB.done) return todoA.done - todoB.done
