@@ -57,13 +57,13 @@
             v-model="todo.title"
             @focus="editTitle(todo.title)"
             @keyup.esc="cancelEditTitle(todo)"
-            @blur="updateTodo(todo)"
+            @blur="updateTitle(todo)"
             class="todoTitle">
           <input type="text"
             v-model="todo.description"
             @focus="editDesc(todo.description)"
             @keyup.esc="cancelEditDesc(todo)"
-            @blur="updateTodo(todo)"
+            @blur="updateDesc(todo)"
             class="todoTitle">
         </div>
         <button
@@ -182,11 +182,23 @@ export default {
     editTitle (title) {
       this.titleCache = title
     },
+    updateTitle (todo) {
+      if (this.titleCache !== todo.title) {
+        this._updateTodo({id: todo.id, title: todo.title})
+      }
+      this.titleCache = ''
+    },
     cancelEditTitle (todo) {
       todo.title = this.titleCache
     },
     editDesc (description) {
       this.descriptionCache = description
+    },
+    updateDesc (todo) {
+      if (this.titleCache !== todo.description) {
+        this._updateTodo({id: todo.id, description: todo.description})
+      }
+      this.descriptionCache = ''
     },
     cancelEditDesc (todo) {
       todo.description = this.descriptionCache
