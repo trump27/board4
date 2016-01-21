@@ -9,26 +9,29 @@
   border none
   outline none
 .todoItem
+  // display inline-block
   width 100%
+  .check
+    width 35px
+    input[type="checkbox"]
+      // display inline-block
+      // position relative
+      // top: 4px;
+      // bottom: 10px;
+      // transform: translateY(-50%);
+      // width 35px
   input
     background-color transparent
   input[type="text"]
     display block
     width 100%
-  input[type="checkbox"]
-    // display inline-block
-    position relative
-    top: 50%;
-    transform: translateY(-50%);
-    width 35px
   div.todoBlock
     display inline-block
-    width 80%
+    width 60%
 .completed
   background-color #efefef
   input[type="text"]
     text-decoration line-through
-
 </style>
 
 <template>
@@ -57,15 +60,18 @@
         @click="state = 'completed'"
         :class="{'active' : state=='completed'}">Completed</button>
     </div>
+    <input type="checkbox" v-model="showDescription">detail
 
     <ul class="list-group">
       <li class="list-group-item todoItem"
         v-for="todo in todos | todoFilter state | filterBy searchText in searchFields"
         :class="{'completed' : todo.done}"
         transition>
-        <input type="checkbox"
-          @click="doneTodo(todo)"
-          v-model="todo.done">
+        <div class="check pull-left">
+          <input type="checkbox"
+            @click="doneTodo(todo)"
+            v-model="todo.done">
+        </div>
         <div class="todoBlock">
           <input type="text"
             v-model="todo.title"
@@ -74,6 +80,7 @@
             @blur="updateTitle(todo)"
             class="todoTitle">
           <input type="text"
+            v-if="showDescription"
             v-model="todo.description"
             @focus="editDesc(todo.description)"
             @keyup.esc="cancelEditDesc(todo)"
@@ -124,6 +131,7 @@ export default {
   data () {
     return {
       state: 'active',
+      showDescription: false,
       newTodoTitle: '',
       newTodoDesc: '',
       todos: [],
