@@ -40,7 +40,8 @@ export function configHttp (vue, router) {
     },
 
     response: function (response) {
-      if (response.status === 401 || !response.ok) {
+      // if (response.status === 401 || !response.ok) {
+      if (response.status === 401) {
         auth.signout()
         console.log('response status : ' + response.status)
         router.go('/signin')

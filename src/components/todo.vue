@@ -25,9 +25,9 @@
     display inline-block
     width 80%
 .completed
+  background-color #efefef
   input[type="text"]
     text-decoration line-through
-  background-color #efefef
 
 </style>
 
@@ -60,7 +60,7 @@
 
     <ul class="list-group">
       <li class="list-group-item todoItem"
-        v-for="todo in todos | todoFilter | filterBy searchText in searchFields"
+        v-for="todo in todos | todoFilter state | filterBy searchText in searchFields"
         :class="{'completed' : todo.done}"
         transition>
         <input type="checkbox"
@@ -102,6 +102,24 @@ function formatDatetime (date = null) {
   ].join('/') + ' ' + date.toLocaleTimeString()
 }
 
+var filters = {
+  all: (todos) => {
+    return todos.filter((todo) => {
+      return true
+    })
+  },
+  active: (todos) => {
+    return todos.filter((todo) => {
+      return !todo.done
+    })
+  },
+  completed: (todos) => {
+    return todos.filter((todo) => {
+      return todo.done
+    })
+  }
+}
+
 export default {
   data () {
     return {
@@ -115,18 +133,13 @@ export default {
   },
 
   filters: {
-    todoFilter: (todos) => {
-      return todos.filter((todo) => {
-        return true
-        // if (self.state === 'all') return true
-        // if (self.state === 'active' && !todo.done) return true
-        // if (self.state === 'completed' && todo.done) return true
-      })
-      .sort((todoA, todoB) => {
-        if (todoA.done !== todoB.done) return todoA.done - todoB.done
-        if (todoA.priority !== todoB.priority) return todoA.priority - todoB.priority
-        return todoB.id - todoA.id
-      })
+    todoFilter: (todos, state) => {
+      return filters[state](todos)
+        .sort((todoA, todoB) => {
+          if (todoA.done !== todoB.done) return todoA.done - todoB.done
+          if (todoA.priority !== todoB.priority) return todoA.priority - todoB.priority
+          return todoB.id - todoA.id
+        })
     }
   },
 
